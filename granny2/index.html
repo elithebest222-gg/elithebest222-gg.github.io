@@ -37,8 +37,8 @@
     </script>
 </head>
 <body>
-    <div id="unity-container" style="position: absolute; width: 100%; height: 100%; left: 0%; top: 0%;">
-        <canvas id="unity-canvas" style="position: absolute; width: 100%; height: 100%"></canvas>
+    <div id="unity-container" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
+        <canvas id="unity-canvas" style="position: absolute; width: 100%; height: 100%;"></canvas>
         <div id="unity-loading-bar">
             <div id="unity-logo"></div>
             <div id="unity-progress-bar-empty">
@@ -56,7 +56,6 @@
         });
 
         var player;
-
         function initPlayer() {
             return ysdk.getPlayer({ scopes: false }).then(_player => {
                 player = _player;
@@ -197,16 +196,18 @@
         initializeGame();
     </script>
 
-    <!-- ✅ Adsterra Ads -->
-    <script type="text/javascript">
-        atOptions = {
-            'key' : 'a664075129e23fcd18c6bebfb6561a9a',
-            'format' : 'iframe',
-            'height' : 60,
-            'width' : 468,
-            'params' : {}
-        };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/a664075129e23fcd18c6bebfb6561a9a/invoke.js"></script>
+    <!-- ✅ Adsterra Banner -->
+    <div id="adsterra-banner" style="position:fixed; bottom:0; left:50%; transform:translateX(-50%); z-index:9999; width:468px; height:60px;">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : 'a664075129e23fcd18c6bebfb6561a9a',
+                'format' : 'iframe',
+                'height' : 60,
+                'width' : 468,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/a664075129e23fcd18c6bebfb6561a9a/invoke.js"></script>
+    </div>
 </body>
 </html>
