@@ -24,7 +24,16 @@
           top: 0;
           left: 0;
       }
-  </style>
+
+      /* Position ad at the bottom center */
+      #adsterra-banner {
+          position: fixed;
+          bottom: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 9999;
+      }
+    </style>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -36,13 +45,27 @@
         </div>
       </div>
     </div>
-    <script>
 
+    <!-- 🔽 Adsterra Banner (468x60) -->
+    <div id="adsterra-banner">
+      <script type="text/javascript">
+        atOptions = {
+          'key': 'a664075129e23fcd18c6bebfb6561a9a',
+          'format': 'iframe',
+          'height': 60,
+          'width': 468,
+          'params': {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/a664075129e23fcd18c6bebfb6561a9a/invoke.js"></script>
+    </div>
+    <!-- 🔼 End Adsterra Banner -->
+
+    <script>
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
-
 
       var loaderUrl = "Build/Build.loader.js";
       var config = {
@@ -69,14 +92,15 @@
           alert(message);
         });
       };
-            function resizeCanvas() {
-                canvas.height = window.innerHeight;
-                canvas.width = window.innerWidth;
-                setTimeout(resizeCanvas, 1000);
-            }
-            resizeCanvas();
-      document.body.appendChild(script);
 
+      function resizeCanvas() {
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        setTimeout(resizeCanvas, 1000);
+      }
+      resizeCanvas();
+
+      document.body.appendChild(script);
     </script>
   </body>
 </html>
