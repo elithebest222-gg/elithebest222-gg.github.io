@@ -46,7 +46,7 @@
                 <div id="unity-progress-bar-full"></div>
             </div>
         </div>
-        <div id="unity-mobile-warning"> WebGL builds are not supported on mobile devices. </div>
+        <div id="unity-mobile-warning" style="display:none;">WebGL builds are not supported on mobile devices.</div>
     </div>
 
     <!-- Adsterra Banner -->
@@ -64,17 +64,23 @@
     </div>
 
     <script>
-        // Unity WebGL loader
         var loadingText = document.querySelector("#loading-text");
         var container = document.querySelector("#unity-container");
         var canvas = document.querySelector("#unity-canvas");
         var loadingBar = document.querySelector("#unity-loading-bar");
         var progressBarFull = document.querySelector("#unity-progress-bar-full");
 
-        // Show Unity container after loading
+        // Force desktop mode
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 60; // leave space for Adsterra
+        }
+        window.addEventListener("resize", resizeCanvas);
+
         function startUnity() {
             container.hidden = false;
             loadingText.remove();
+            resizeCanvas();
 
             var config = {
                 dataUrl: "Build/hk.data",
@@ -100,10 +106,7 @@
             document.body.appendChild(script);
         }
 
-        // Start Unity after small delay for loading text
-        window.addEventListener("load", () => {
-            setTimeout(startUnity, 500);
-        });
+        window.addEventListener("load", () => setTimeout(startUnity, 500));
     </script>
 </body>
 
