@@ -185,7 +185,6 @@
                 }).then((unityInstance) => {
                     myGameInstance = unityInstance;
                     setTimeout(() => { loadingBar.style.display = "none"; }, 500);
-                    // Oyun yüklendiğinde tıklama olayını ekle
                     canvas.addEventListener('pointerdown', showAdOnClick);
                     canvas.addEventListener('touchstart', showAdOnClick);
                 }).catch((message) => {
@@ -197,5 +196,17 @@
 
         initializeGame();
     </script>
+
+    <!-- ✅ Adsterra Ads -->
+    <script type="text/javascript">
+        atOptions = {
+            'key' : 'a664075129e23fcd18c6bebfb6561a9a',
+            'format' : 'iframe',
+            'height' : 60,
+            'width' : 468,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/a664075129e23fcd18c6bebfb6561a9a/invoke.js"></script>
 </body>
 </html>
