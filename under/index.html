@@ -21,6 +21,7 @@
       display: block;
       width: 100%;
       height: 100%;
+      background: black;
     }
     #lockBtn {
       position: absolute;
@@ -41,7 +42,19 @@
   </div>
   <button id="lockBtn">Lock Mouse</button>
 
-  <!-- Load your GameMaker runtime -->
+  <!-- Main game runtime -->
+  <script>
+    // Tell GameMaker where to find the WASM file
+    window.Module = {
+      canvas: document.getElementById("canvas"),
+      locateFile: function(path) {
+        if (path.endsWith(".wasm")) {
+          return "runner.wasm"; // must be in same folder
+        }
+        return path;
+      }
+    };
+  </script>
   <script src="runner.js"></script>
 
   <script>
@@ -50,15 +63,11 @@
     const lockBtn = document.getElementById("lockBtn");
 
     lockBtn.addEventListener("click", () => {
-      canvas.requestPointerLock = canvas.requestPointerLock ||
-                                  canvas.mozRequestPointerLock ||
-                                  canvas.webkitRequestPointerLock;
       if (canvas.requestPointerLock) {
         canvas.requestPointerLock();
       }
     });
 
-    // Handle exit
     document.addEventListener("pointerlockchange", () => {
       if (document.pointerLockElement === canvas) {
         console.log("Pointer locked.");
