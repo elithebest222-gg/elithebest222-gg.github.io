@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Game Hub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    h1 {
+      margin: 20px 0;
+    }
+    .games {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+    .game {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      width: 200px;
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s;
+      padding: 10px;
+    }
+    .game:hover {
+      transform: scale(1.05);
+    }
+    .game h3 {
+      margin: 10px 0 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 My Game Hub</h1>
+  <div class="games">
+    <a href="https://elithebest222-gg.github.io/granny2" target="_blank" class="game">
+      <h3>Granny 2</h3>
+    </a>
+    <a href="https://elithebest222-gg.github.io/uk" target="_blank" class="game">
+      <h3>UK Game</h3>
+    </a>
+    <a href="https://elithebest222-gg.github.io/Gmod" target="_blank" class="game">
+      <h3>Gmod</h3>
+    </a>
+  </div>
+  <footer style="margin: 40px 0; color: #666;">© 2025 My Game Site</footer>
+</body>
+</html>
