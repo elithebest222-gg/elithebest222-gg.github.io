@@ -28,16 +28,18 @@
       width: 250px;
       text-decoration: none;
       color: black;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .game img {
       width: 100%;
       height: auto;
       border-radius: 4px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .game img:hover {
+    .game:hover img {
       transform: scale(1.05);
+      box-shadow: 0 0 15px 5px red; /* red highlight on hover */
     }
     .game h3 {
       margin-top: 12px;
