@@ -7,36 +7,41 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
+      background: #fff;
       margin: 0;
-      padding: 0;
+      padding: 20px;
       text-align: center;
     }
     h1 {
-      margin: 20px 0;
+      margin-bottom: 30px;
     }
     .games {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      padding: 20px;
+      gap: 30px;
     }
     .game {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      width: 200px;
+      width: 250px;
       text-decoration: none;
-      color: #333;
-      transition: transform 0.2s;
-      padding: 10px;
+      color: black;
     }
-    .game:hover {
+    .game img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .game img:hover {
       transform: scale(1.05);
     }
     .game h3 {
-      margin: 10px 0 0;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
   </style>
 </head>
@@ -44,15 +49,17 @@
   <h1>🎮 My Game Hub</h1>
   <div class="games">
     <a href="https://elithebest222-gg.github.io/granny2" target="_blank" class="game">
+      <img src="https://via.placeholder.com/250x250.png?text=Granny+2" alt="Granny 2">
       <h3>Granny 2</h3>
     </a>
     <a href="https://elithebest222-gg.github.io/uk" target="_blank" class="game">
-      <h3>UK Game</h3>
+      <img src="https://via.placeholder.com/250x250.png?text=ULTRAKILL" alt="ULTRAKILL">
+      <h3>ULTRAKILL</h3>
     </a>
     <a href="https://elithebest222-gg.github.io/Gmod" target="_blank" class="game">
+      <img src="https://via.placeholder.com/250x250.png?text=Gmod" alt="Gmod">
       <h3>Gmod</h3>
     </a>
   </div>
-  <footer style="margin: 40px 0; color: #666;">© N#BULA</footer>
 </body>
 </html>
