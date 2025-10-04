@@ -6,35 +6,6 @@
     <title>Unity WebGL Player | Granny 2</title>
     <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/favicon.ico"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/styles.css"/>
-    <!-- GameMonetize SDK Entegrasyonu -->
-    <script type="text/javascript">
-        window.SDK_OPTIONS = {
-            gameId: "jp112o3o4hzgrnc7zaewjkrfk282pul8",
-            onEvent: function (a) {
-                switch (a.name) {
-                    case "SDK_GAME_PAUSE":
-                        console.log("Oyun duraklatıldı, ses kapatılıyor...");
-                        if (typeof myGameInstance !== 'undefined' && myGameInstance) {
-                            myGameInstance.SendMessage('AudioManager', 'MuteAudio');
-                        }
-                        break;
-                    case "SDK_GAME_START":
-                        console.log("Reklam bitti, oyun devam ediyor...");
-                        if (typeof myGameInstance !== 'undefined' && myGameInstance) {
-                            myGameInstance.SendMessage('AudioManager', 'UnmuteAudio');
-                        }
-                        break;
-                    case "SDK_READY":
-                        console.log("SDK hazır.");
-                        break;
-                }
-            }
-        };
-        (function (a, b, c) {
-            var d = a.getElementsByTagName(b)[0];
-            a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "https://cdn.jsdelivr.net/gh/testamalame/sef@main/sedk.js", d.parentNode.insertBefore(a, d));
-        })(document, "script", "gamemonetize-sdk");
-    </script>
 </head>
 <body>
     <div id="unity-container" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
@@ -48,21 +19,10 @@
         <div id="unity-warning"> </div>
     </div>
 
-    <script>
-        YaGames.init().then(ysdk => {
-            console.log('Yandex SDK initialized');
-            window.ysdk = ysdk;
-            initPlayer();
-        });
-
-        var player;
-        function initPlayer() {
-            return ysdk.getPlayer({ scopes: false }).then(_player => {
-                player = _player;
-                return player;
-            });
-        }
-    </script>
+    <!-- PropellerAds Banner -->
+    <div id="propellerads-banner" style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; max-width: 728px; width: 100%; display: none;">
+        <script src="https://fpyf8.com/88/tag.min.js" data-zone="175846" async data-cfasync="false"></script>
+    </div>
 
     <script>
         var container = document.querySelector("#unity-container");
@@ -72,7 +32,6 @@
         var warningBanner = document.querySelector("#unity-warning");
 
         let myGameInstance = null;
-        let isAdShown = false;
 
         function unityShowBanner(msg, type) {
             function updateBannerVisibility() {
@@ -91,43 +50,6 @@
             }
             updateBannerVisibility();
         }
-
-        function showAdOnClick() {
-            if (!isAdShown && typeof sdk !== 'undefined' && typeof sdk.showBanner !== 'undefined') {
-                sdk.showBanner();
-                isAdShown = true;
-                console.log("Reklam çağrıldı.");
-            } else {
-                console.warn("SDK veya showBanner tanımlı değil.");
-            }
-        }
-
-        let environmentData = {
-            language: "en",
-            domain: "default_domain",
-            deviceType: "desktop",
-            isMobile: false,
-            isDesktop: true,
-            isTablet: false,
-            isTV: false,
-            appID: "default_app_id",
-            browserLang: navigator.language || "en",
-            payload: null,
-            promptCanShow: false,
-            reviewCanShow: false,
-            platform: navigator.platform,
-            browser: (function() {
-                let userAgent = navigator.userAgent;
-                if (userAgent.includes("YaBrowser")) return "Yandex";
-                if (userAgent.includes("OPR") || userAgent.includes("Opera")) return "Opera";
-                if (userAgent.includes("Firefox")) return "Firefox";
-                if (userAgent.includes("MSIE") || userAgent.includes("Trident")) return "IE";
-                if (userAgent.includes("Edge")) return "Edge";
-                if (userAgent.includes("Chrome")) return "Chrome";
-                if (userAgent.includes("Safari")) return "Safari";
-                return "Other";
-            })()
-        };
 
         async function mergeFiles(parts, onProgress) {
             let loaded = 0;
@@ -183,9 +105,10 @@
                     progressBarFull.style.width = (100 * progress) + "%";
                 }).then((unityInstance) => {
                     myGameInstance = unityInstance;
-                    setTimeout(() => { loadingBar.style.display = "none"; }, 500);
-                    canvas.addEventListener('pointerdown', showAdOnClick);
-                    canvas.addEventListener('touchstart', showAdOnClick);
+                    setTimeout(() => {
+                        loadingBar.style.display = "none";
+                        document.getElementById('propellerads-banner').style.display = 'block'; // Show PropellerAds banner
+                    }, 500);
                 }).catch((message) => {
                     alert(message);
                 });
@@ -195,19 +118,5 @@
 
         initializeGame();
     </script>
-
-    <!-- ✅ Adsterra Banner -->
-    <div id="adsterra-banner" style="position:fixed; bottom:0; left:50%; transform:translateX(-50%); z-index:9999; width:468px; height:60px;">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : 'a664075129e23fcd18c6bebfb6561a9a',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/a664075129e23fcd18c6bebfb6561a9a/invoke.js"></script>
-    </div>
 </body>
 </html>
