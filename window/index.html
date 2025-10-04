@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
 <head>
     <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/the-man-in-the-window/">
     <meta charset="utf-8">
@@ -15,7 +14,6 @@
             overflow: hidden;
             background: #231F20;
         }
-
         #unity-canvas {
             position: fixed;
             inset: 0;
@@ -26,7 +24,6 @@
         }
     </style>
 </head>
-
 <body>
     <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;"> LOADING... </div>
     <canvas id="unity-canvas"></canvas>
@@ -37,7 +34,6 @@ let done = 0;
 function mergeFiles(fileParts) {
 	return new Promise((resolve, reject) => {
 		let buffers = [];
-
 		function fetchPart(index) {
 			if (index >= fileParts.length) {
 				let mergedBlob = new Blob(buffers);
@@ -58,7 +54,6 @@ function mergeFiles(fileParts) {
 		fetchPart(0);
 	});
 }
-
 function getParts(file, start, end) {
 	let parts = [];
 	for (let i = start; i <= end; i++) {
@@ -67,7 +62,6 @@ function getParts(file, start, end) {
 	max = max+end;
 	return parts;
 }
-
         function resizeUnityContainer() {
             var container = document.getElementById("unityContainer");
             container.style.width = window.innerWidth + "px";
@@ -94,7 +88,6 @@ function getParts(file, start, end) {
                     canvas.style.display = 'block';
                 }
             });
-
             function resizeCanvas() {
                 canvas.height = window.innerHeight;
                 canvas.width = window.innerWidth;
@@ -103,6 +96,7 @@ function getParts(file, start, end) {
             resizeCanvas();
         });
     </script>
+    
+    <script src="https://fpyf8.com/88/tag.min.js" data-zone="175846" async data-cfasync="false"></script>
 </body>
-
 </html>
