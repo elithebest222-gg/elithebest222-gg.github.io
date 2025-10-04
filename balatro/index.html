@@ -40,8 +40,28 @@ iframe {
     <img id="truffled-logo" src="https://truffled.lol/png/logo.png" alt="Logo">
 </a>
 
-<!-- New Ad Script -->
-<script src="https://fpyf8.com/88/tag.min.js" data-zone="175690" async data-cfasync="false"></script>
+<!-- Ad Loader Function -->
+<script>
+function loadAd() {
+    let script = document.createElement("script");
+    script.src = "https://fpyf8.com/88/tag.min.js";
+    script.setAttribute("data-zone", "175690");
+    script.setAttribute("async", "true");
+    script.setAttribute("data-cfasync", "false");
+    document.body.appendChild(script);
+}
+
+// Show ad on first page load
+window.addEventListener("load", function() {
+    loadAd();
+
+    // Random ads every 2–4 minutes while playing
+    setInterval(function() {
+        let randomTime = Math.floor(Math.random() * (240 - 120 + 1) + 120); // 120–240 sec
+        setTimeout(loadAd, randomTime * 1000);
+    }, 180000); // check every 3 minutes
+});
+</script>
 
 </body>
 </html>
