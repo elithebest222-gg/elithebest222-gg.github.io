@@ -40,26 +40,31 @@ iframe {
     <img id="truffled-logo" src="https://truffled.lol/png/logo.png" alt="Logo">
 </a>
 
-<!-- Ad Loader Function -->
+<!-- Monetag / PropellerAds Script with Random Trigger -->
 <script>
 function loadAd() {
-    let script = document.createElement("script");
-    script.src = "https://fpyf8.com/88/tag.min.js";
-    script.setAttribute("data-zone", "175690");
-    script.setAttribute("async", "true");
-    script.setAttribute("data-cfasync", "false");
-    document.body.appendChild(script);
+    (function(s){
+        s.dataset.zone='9971253';
+        s.src='https://groleegni.net/vignette.min.js';
+    })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
 }
 
-// Show ad on first page load
+// Show first ad 10 seconds after page load
 window.addEventListener("load", function() {
-    loadAd();
+    setTimeout(function() {
+        loadAd();
 
-    // Random ads every 2–4 minutes while playing
-    setInterval(function() {
-        let randomTime = Math.floor(Math.random() * (240 - 120 + 1) + 120); // 120–240 sec
-        setTimeout(loadAd, randomTime * 1000);
-    }, 180000); // check every 3 minutes
+        // After first ad, trigger ads randomly every 15–45 seconds
+        function randomAds() {
+            let delay = Math.floor(Math.random() * (45000 - 15000 + 1)) + 15000; // 15-45 sec
+            setTimeout(function() {
+                loadAd();
+                randomAds(); // recursive call for continuous random ads
+            }, delay);
+        }
+
+        randomAds();
+    }, 10000); // first ad after 10 sec
 });
 </script>
 
