@@ -44,6 +44,17 @@
             console.error(msg);
         }
 
+        async function checkFile(url) {
+            try {
+                const res = await fetch(url, { method: 'HEAD', mode: 'cors' });
+                if (!res.ok) throw new Error(`Inaccessible: ${url}`);
+                return true;
+            } catch (err) {
+                showError(err.message);
+                return false;
+            }
+        }
+
         async function mergeFiles(parts, onProgress) {
             let loaded = 0;
             try {
@@ -75,6 +86,12 @@
             const frameworkUrl = buildUrl + "/Granny 2.frameworkx.js";
 
             loadingBar.style.display = "block";
+
+            // Verify all files are accessible
+            const files = [loaderUrl, frameworkUrl, ...dataParts, ...wasmParts];
+            for (const file of files) {
+                if (!(await checkFile(file))) return;
+            }
 
             try {
                 const [dataUrl, wasmUrl] = await Promise.all([
