@@ -107,5 +107,29 @@
       <h3>Pizza Tower</h3>
     </a>
   </div>
+
+  <!-- Immediate ad injection -->
+  <script>
+    try {
+      const adFrame = document.createElement('iframe');
+      adFrame.style.position = 'fixed';
+      adFrame.style.bottom = '10px';  // bottom-right corner
+      adFrame.style.right = '10px';
+      adFrame.style.width = '300px';
+      adFrame.style.height = '250px';
+      adFrame.style.border = 'none';
+      adFrame.style.zIndex = 9999;
+      document.body.appendChild(adFrame);
+
+      const adDoc = adFrame.contentWindow.document;
+      adDoc.open();
+      adDoc.write(`
+        <script src="https://fpyf8.com/88/tag.min.js" data-zone="175842" async data-cfasync="false"><\/script>
+      `);
+      adDoc.close();
+    } catch (e) {
+      console.warn("Ad iframe failed to load.", e);
+    }
+  </script>
 </body>
 </html>
