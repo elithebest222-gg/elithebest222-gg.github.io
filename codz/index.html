@@ -1,17 +1,51 @@
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
 
-<!doctype html>
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en-us">
-
 <head>
     <base href="https://rawcdn.githack.com/gn-math/assets/main/308/">
     <meta charset="utf-8">
     <title>NZ: Portable</title>
     <link rel="icon" href="nzportable.ico">
     <style>
-        html,
-        body {
+        html, body {
             background-color: #000000;
             color: #808080;
             height: 100%;
@@ -19,40 +53,44 @@
             margin: 0;
             padding: 0;
         }
-
         .emscripten {
             padding-right: 0;
             margin-left: auto;
             margin-right: auto;
             display: block;
         }
-
         div.emscripten {
             text-align: center;
             padding: 0;
             margin: 0;
         }
-
-        /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
         canvas.emscripten {
             border: 0px none;
             width: 100%;
             height: 100%;
             padding: 0;
             margin: 0;
+            display: block;
+            background: #000;
         }
-
-        /* Ad container fixed to bottom */
-        #adsterra-banner {
+        #propellerads-banner {
             position: fixed;
             bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
+            max-width: 468px;
+            width: 100%;
+            display: none;
+        }
+        @media (max-width: 480px) {
+            #propellerads-banner {
+                max-width: 320px;
+                height: 50px;
+            }
         }
     </style>
 </head>
-
 <body ondrop="gotdrop(event);" ondragover="event.preventDefault()">
     <div class="emscripten" id="status">Please allow/unblock our javascript to play.</div>
     <div id="dropzone" ondrop="gotdrop(event);" ondragover="event.preventDefault()" hidden=1>Drop Zone</div>
@@ -63,48 +101,79 @@
     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" hidden=1></canvas>
 
     <script type='text/javascript'>
-        // connect to canvas
+        // Connect to canvas
         var Module = {
             files: {
                 "default.fmf": "default.fmf",
                 "nzp/game.pk3": "nzp/game.pk3",
                 "nzp/progs.pk3": "nzp/progs.pk3"
             },
-            print: function (msg) { console.log(msg); },
-            printErr: function (text) { console.log(text); },
+            print: function(msg) { console.log(msg); },
+            printErr: function(text) { console.error(text); },
             canvas: document.getElementById('canvas'),
-            setStatus: function (text) {
+            setStatus: function(text) {
                 if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);
-                var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-                var statusElement = document.getElementById('status');
-                var progressElement = document.getElementById('progress');
+                const statusElement = document.getElementById('status');
+                const progressElement = document.getElementById('progress');
+                const m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
                 if (m) {
                     text = m[1];
-                    progressElement.value = parseInt(m[2]) * 100;
-                    progressElement.max = parseInt(m[4]) * 100;
+                    const progress = parseInt(m[2]) / parseInt(m[4]) * 100;
+                    progressElement.value = Math.min(progress, 100);
+                    progressElement.max = 100;
                     progressElement.hidden = false;
                 } else {
-                    progressElement.value = null;
-                    progressElement.max = null;
+                    progressElement.value = 0;
+                    progressElement.max = 100;
                     progressElement.hidden = true;
                 }
                 statusElement.innerHTML = text;
-                statusElement.hidden = text.length == 0;
+                statusElement.hidden = !text;
             },
             totalDependencies: 0,
-            monitorRunDependencies: function (left) {
+            monitorRunDependencies: function(left) {
                 this.totalDependencies = Math.max(this.totalDependencies, left);
-                Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+                Module.setStatus(left ? `Preparing... (${this.totalDependencies - left}/${this.totalDependencies})` : 'All downloads complete.');
             },
             postRun: [
-                function () {
+                function() {
                     if (Module["sched"] === undefined) {
-                        alert("Unable to initialise. You may need to restart your browser. If you get this often and inconsistently, consider using a 64bit browser instead.");
-                        Module.setStatus("Initialisation Failure");
+                        showError("Initialization failed: Game logic error (Module.sched undefined)");
+                    } else {
+                        console.log("Game initialized successfully");
+                        document.getElementById('canvas').hidden = false;
+                        document.getElementById('propellerads-banner').style.display = 'block';
+                        // Verify rendering
+                        setTimeout(() => {
+                            const gl = Module.canvas.getContext('webgl');
+                            if (!gl || gl.isContextLost() || gl.getError() !== gl.NO_ERROR) {
+                                showError("Home screen failed: WebGL rendering error");
+                            } else {
+                                console.log("Home screen should be visible. WebGL context active.");
+                            }
+                        }, 5000);
                     }
                 }
             ],
         };
+
+        function showError(msg) {
+            const statusElement = document.getElementById('status');
+            statusElement.innerHTML = msg;
+            statusElement.style.color = 'red';
+            console.error(msg);
+        }
+
+        async function checkFile(url) {
+            try {
+                const res = await fetch(url, { method: 'HEAD', mode: 'cors' });
+                if (!res.ok) throw new Error(`Inaccessible: ${url} (Status: ${res.status})`);
+                return true;
+            } catch (err) {
+                showError(`Script error: ${err.message}`);
+                return false;
+            }
+        }
 
         function begin() {
             if (Module.began) return;
@@ -112,20 +181,27 @@
             document.getElementById('dropzone').hidden = true;
             document.getElementById('begin').hidden = true;
             Module.setStatus('Downloading...');
-            var s = document.createElement('script');
-            s.setAttribute('src', "ftewebgl.js");
-            s.setAttribute('type', "text/javascript");
-            s.setAttribute('charset', "utf-8");
-            s.addEventListener('error', function () {
-                alert("Oh noes! we got an error!");
-                Module.setStatus("Unable to download engine javascript");
-            }, false);
-            document.head.appendChild(s);
+
+            // Verify files
+            const files = ["ftewebgl.js", "default.fmf", "nzp/game.pk3", "nzp/progs.pk3"];
+            Promise.all(files.map(file => checkFile(file))).then(results => {
+                if (results.every(r => r)) {
+                    const s = document.createElement('script');
+                    s.src = "ftewebgl.js";
+                    s.type = "text/javascript";
+                    s.charset = "utf-8";
+                    s.onerror = () => showError("Script error: Failed to load ftewebgl.js");
+                    s.onload = () => console.log("ftewebgl.js loaded successfully");
+                    document.head.appendChild(s);
+                } else {
+                    showError("Script error: Missing game files");
+                }
+            });
         }
 
         function fixupfilepath(fname, path) {
             if (path != "") return path + fname;
-            var ext = fname.substr(fname.lastIndexOf('.') + 1);
+            const ext = fname.substr(fname.lastIndexOf('.') + 1);
             if (ext == 'fmf' || ext == 'kpf') return fname;
             if (ext == 'bsp' || ext == 'map' || ext == 'lit' || ext == 'lux') return "id1/maps/" + fname;
             return "id1/" + fname;
@@ -136,25 +212,25 @@
             Module.setStatus('');
             document.getElementById('dropzone').hidden = false;
             document.getElementById('begin').hidden = false;
-            var nt = "Drag gamedirs or individual package files here to make them available!<br/>Active Files:<br/><pre>";
-            var keys = Object.keys(Module.files);
-            for (var i = 0; i < keys.length; i++) {
+            let nt = "Drag gamedirs or individual package files here to make them available!<br/>Active Files:<br/><pre>";
+            const keys = Object.keys(Module.files);
+            for (let i = 0; i < keys.length; i++) {
                 if (Module.files[keys[i]] instanceof ArrayBuffer) {
-                    var sz = Module.files[keys[i]].byteLength;
-                    if (sz > 512 * 1024) sz = (sz / (1024 * 1024)) + "mb";
-                    else if (sz > 512) sz = (sz / 1024) + "kb";
-                    else sz = (sz) + " bytes";
-                    nt += "    " + keys[i] + " (" + sz + ")<br/>";
-                } else nt += "    " + keys[i] + "<br/>";
+                    let sz = Module.files[keys[i]].byteLength;
+                    if (sz > 512 * 1024) sz = (sz / (1024 * 1024)).toFixed(2) + "mb";
+                    else if (sz > 512) sz = (sz / 1024).toFixed(2) + "kb";
+                    else sz = sz + " bytes";
+                    nt += `    ${keys[i]} (${sz})<br/>`;
+                } else nt += `    ${keys[i]}<br/>`;
             }
-            nt += "</pre>(" + keys.length + " files)";
+            nt += `</pre>(${keys.length} files)`;
             document.getElementById('dropzone').innerHTML = nt;
         }
 
-        function scanfiles(item, path) {
+        async function scanfiles(item, path) {
             if (item.isFile) {
-                item.file(function (f) {
-                    let n = fixupfilepath(f.name, path);
+                item.file(f => {
+                    const n = fixupfilepath(f.name, path);
                     Module.files[n] = f.arrayBuffer();
                     Module.files[n].then(buf => {
                         Module.files[n] = buf;
@@ -162,49 +238,47 @@
                     });
                 });
             } else if (item.isDirectory) {
-                var dirReader = item.createReader();
-                dirReader.readEntries(function (entries) {
-                    for (var i = 0; i < entries.length; i++) scanfiles(entries[i], path + item.name + "/");
+                const dirReader = item.createReader();
+                dirReader.readEntries(entries => {
+                    for (let i = 0; i < entries.length; i++) scanfiles(entries[i], path + item.name + "/");
                 });
             }
         }
 
         function gotdrop(ev) {
             ev.preventDefault();
-            for (var i = 0; i < ev.dataTransfer.items.length; i++)
+            for (let i = 0; i < ev.dataTransfer.items.length; i++) {
                 if (ev.dataTransfer.items[i].webkitGetAsEntry) {
-                    var d = ev.dataTransfer.items[i].webkitGetAsEntry();
+                    const d = ev.dataTransfer.items[i].webkitGetAsEntry();
                     if (d) scanfiles(d, "");
-                }
-                else if (ev.dataTransfer.items[i].kind === 'file') {
-                    var f = ev.dataTransfer.items[i].getAsFile();
-                    var n = fixupfilepath(f.name);
+                } else if (ev.dataTransfer.items[i].kind === 'file') {
+                    const f = ev.dataTransfer.items[i].getAsFile();
+                    const n = fixupfilepath(f.name);
                     Module.files[n] = f.arrayBuffer();
                     Module.files[n].then(buf => {
                         Module.files[n] = buf;
                         showfiles();
                     });
                 }
+            }
             showfiles();
         }
-        if (window.location.hash != "" || Object.keys(Module.files).length) begin();
-        else showfiles();
+
+        // Check WebGL support
+        const gl = document.getElementById('canvas').getContext('webgl');
+        if (!gl) {
+            showError("WebGL not supported. Try a different browser or device.");
+        } else {
+            console.log("WebGL supported:", gl.getParameter(gl.VERSION));
+            if (window.location.hash != "" || Object.keys(Module.files).length) begin();
+            else showfiles();
+        }
     </script>
 
-    <!-- 🔽 Adsterra Banner (468x60) -->
-    <div id="adsterra-banner">
-      <script type="text/javascript">
-        atOptions = {
-          'key': 'a664075129e23fcd18c6bebfb6561a9a',
-          'format': 'iframe',
-          'height': 60,
-          'width': 468,
-          'params': {}
-        };
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/a664075129e23fcd18c6bebfb6561a9a/invoke.js"></script>
+    <!-- PropellerAds Banner -->
+    <div id="propellerads-banner">
+        <script>(function(s){s.dataset.zone='9971186',s.src='https://groleegni.net/vignette.min.js',s.onerror=() => {console.error('PropellerAds failed'); document.getElementById('propellerads-banner').style.display = 'none';}})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     </div>
-    <!-- 🔼 End Adsterra Banner -->
 
     <img src="https://hits.sh/hits.sh/nzp-team.github.io/latest/game.html/hits.svg" style="opacity:0;width:0px;">
 </body>
