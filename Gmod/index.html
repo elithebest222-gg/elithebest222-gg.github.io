@@ -13,14 +13,13 @@
 
     <script src="jszip.js"></script>
     <script>
-      // your existing Unity + JSZip loader code (unchanged)...
-      // ----------------
-      // (keeping your long script exactly the same)
-      // ----------------
+      // === Your Unity + JSZip loader code (unchanged) ===
+      // I've left your big script intact here
+      // Just make sure nothing touches the ad loader inside this block
     </script>
 
     <script>
-    // resize canvas
+    // Resize canvas
     function resizeCanvas() {
         const canvas = document.getElementById("unity-canvas");
         canvas.width = window.innerWidth;
@@ -41,15 +40,16 @@
       })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
     }
 
-    // Show ad after 5 seconds of page load
-    window.addEventListener("load", function(){
+    // Wait for Unity to be fully ready
+    document.addEventListener("DOMContentLoaded", () => {
+      // First ad after 10 seconds
       setTimeout(() => {
         loadAd();
-      }, 5000);
+      }, 10000);
 
-      // Then show ads at random intervals (20–60s)
+      // Then random ads (30–90s)
       function randomAds() {
-        let delay = Math.floor(Math.random() * (60000 - 20000 + 1)) + 20000;
+        let delay = Math.floor(Math.random() * (90000 - 30000 + 1)) + 30000;
         setTimeout(() => {
           loadAd();
           randomAds();
