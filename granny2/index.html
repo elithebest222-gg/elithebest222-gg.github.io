@@ -6,6 +6,11 @@
     <title>Unity WebGL Player | Granny 2</title>
     <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/favicon.ico"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/styles.css"/>
+    <style>
+        @media (max-width: 480px) {
+            #propellerads-banner { max-width: 320px; height: 50px; }
+        }
+    </style>
 </head>
 <body>
     <div id="unity-container" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
@@ -16,104 +21,95 @@
                 <div id="unity-progress-bar-full"></div>
             </div>
         </div>
-        <div id="unity-warning"> </div>
+        <div id="unity-warning"></div>
     </div>
 
     <!-- PropellerAds Banner -->
     <div id="propellerads-banner" style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; max-width: 728px; width: 100%; display: none;">
-        <script src="https://fpyf8.com/88/tag.min.js" data-zone="175846" async data-cfasync="false"></script>
+        <script>(function(s){s.dataset.zone='9971186',s.src='https://groleegni.net/vignette.min.js',s.onerror=() => {console.error('PropellerAds failed'); document.getElementById('propellerads-banner').style.display = 'none';}})(document.body.appendChild(document.createElement('script')))</script>
     </div>
 
     <script>
-        var container = document.querySelector("#unity-container");
-        var canvas = document.querySelector("#unity-canvas");
-        var loadingBar = document.querySelector("#unity-loading-bar");
-        var progressBarFull = document.querySelector("#unity-progress-bar-full");
-        var warningBanner = document.querySelector("#unity-warning");
+        const canvas = document.querySelector("#unity-canvas");
+        const loadingBar = document.querySelector("#unity-loading-bar");
+        const progressBarFull = document.querySelector("#unity-progress-bar-full");
+        const warningBanner = document.querySelector("#unity-warning");
 
-        let myGameInstance = null;
-
-        function unityShowBanner(msg, type) {
-            function updateBannerVisibility() {
-                warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-            }
-            var div = document.createElement('div');
+        function showError(msg) {
+            const div = document.createElement('div');
             div.innerHTML = msg;
+            div.style = 'background: red; padding: 10px;';
             warningBanner.appendChild(div);
-            if (type == 'error') div.style = 'background: red; padding: 10px;';
-            else {
-                if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-                setTimeout(function() {
-                    warningBanner.removeChild(div);
-                    updateBannerVisibility();
-                }, 5000);
-            }
-            updateBannerVisibility();
+            warningBanner.style.display = 'block';
+            console.error(msg);
         }
 
         async function mergeFiles(parts, onProgress) {
             let loaded = 0;
-            const total = parts.length;
-            const blobs = await Promise.all(parts.map(async (part, index) => {
-                const res = await fetch(part);
-                const blob = await res.blob();
-                loaded++;
-                if (onProgress) onProgress(loaded / total);
-                return blob;
-            }));
-            return URL.createObjectURL(new Blob(blobs));
+            try {
+                const blobs = await Promise.all(parts.map(async part => {
+                    const res = await fetch(part, { mode: 'cors' });
+                    if (!res.ok) throw new Error(`Fetch failed: ${part}`);
+                    loaded++;
+                    if (onProgress) onProgress(loaded / parts.length);
+                    return res.blob();
+                }));
+                return URL.createObjectURL(new Blob(blobs));
+            } catch (err) {
+                throw new Error(`Merge failed: ${err.message}`);
+            }
         }
 
         async function initializeGame() {
-            var buildUrl = "https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/Build";
-            var loaderUrl = buildUrl + "/Granny 2.loader.js";
-            
-            var dataParts = [
-                "https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/Build/Granny 2_part1.data", 
-                "https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/Build/Granny 2_part2.data", 
-                "https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/Build/Granny 2_part3.data"
+            const buildUrl = "https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/Build";
+            const loaderUrl = buildUrl + "/Granny 2.loader.js";
+            const dataParts = [
+                buildUrl + "/Granny 2_part1.data",
+                buildUrl + "/Granny 2_part2.data",
+                buildUrl + "/Granny 2_part3.data"
             ];
-            var wasmParts = [
-                "https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/Build/Granny 2_part1.wasm", 
-                "https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/Build/Granny 2_part2.wasm"
+            const wasmParts = [
+                buildUrl + "/Granny 2_part1.wasm",
+                buildUrl + "/Granny 2_part2.wasm"
             ];
-            
+            const frameworkUrl = buildUrl + "/Granny 2.frameworkx.js";
+
             loadingBar.style.display = "block";
-            
-            var dataUrl = await mergeFiles(dataParts, progress => {
-                progressBarFull.style.width = (50 * progress) + "%";
-            });
-            var wasmUrl = await mergeFiles(wasmParts, progress => {
-                progressBarFull.style.width = (50 + 50 * progress) + "%";
-            });
-            
-            var config = {
-                dataUrl: dataUrl,
-                frameworkUrl: buildUrl + "/Granny 2.frameworkx.js",
-                codeUrl: wasmUrl,
-                streamingAssetsUrl: "StreamingAssets",
-                companyName: "Awesome",
-                productName: "Granny 2",
-                productVersion: "1.0",
-                showBanner: unityShowBanner,
-            };
-            
-            var script = document.createElement("script");
-            script.src = loaderUrl;
-            script.onload = () => {
-                createUnityInstance(canvas, config, (progress) => {
-                    progressBarFull.style.width = (100 * progress) + "%";
-                }).then((unityInstance) => {
-                    myGameInstance = unityInstance;
-                    setTimeout(() => {
-                        loadingBar.style.display = "none";
-                        document.getElementById('propellerads-banner').style.display = 'block'; // Show PropellerAds banner
-                    }, 500);
-                }).catch((message) => {
-                    alert(message);
-                });
-            };
-            document.body.appendChild(script);
+
+            try {
+                const [dataUrl, wasmUrl] = await Promise.all([
+                    mergeFiles(dataParts, p => progressBarFull.style.width = (50 * p) + "%"),
+                    mergeFiles(wasmParts, p => progressBarFull.style.width = (50 + 50 * p) + "%")
+                ]);
+
+                const config = {
+                    dataUrl,
+                    frameworkUrl,
+                    codeUrl: wasmUrl,
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "Awesome",
+                    productName: "Granny 2",
+                    productVersion: "1.0",
+                    showBanner: (msg, type) => type === 'error' && showError(msg)
+                };
+
+                const script = document.createElement("script");
+                script.src = loaderUrl;
+                script.async = true;
+                script.onerror = () => showError(`Loader failed: ${loaderUrl}`);
+                script.onload = () => {
+                    if (typeof createUnityInstance === 'undefined') return showError('Unity loader undefined');
+                    createUnityInstance(canvas, config, p => progressBarFull.style.width = (100 * p) + "%")
+                        .then(() => {
+                            loadingBar.style.display = "none";
+                            document.getElementById('propellerads-banner').style.display = 'block';
+                        })
+                        .catch(err => showError(`Unity error: ${err.message}`));
+                };
+                document.body.appendChild(script);
+            } catch (err) {
+                showError(`Game failed: ${err.message}`);
+            }
         }
 
         initializeGame();
