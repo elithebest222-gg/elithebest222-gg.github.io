@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clash Royale</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      background: #0b1220;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      display: block;
+    }
+
+    .fallback {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: #0b1220;
+      color: #fff;
+      text-align: center;
+    }
+
+    .fallback a {
+      color: #ffd700;
+      text-decoration: none;
+      border: 2px solid #ffd700;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-top: 12px;
+      font-size: 16px;
+    }
+
+    .fallback a:hover {
+      background: #ffd700;
+      color: #0b1220;
+    }
+  </style>
+</head>
+<body>
+  <iframe
+    id="greenfootGame"
+    src="https://www.greenfoot.org/scenarios/27793?embed=true"
+    allowfullscreen
+    loading="eager">
+  </iframe>
+
+  <div class="fallback" id="fallback">
+    <h2>Game failed to load 😢</h2>
+    <p>Click below to play it directly on Greenfoot:</p>
+    <a href="https://www.greenfoot.org/scenarios/27793" target="_blank">Play on Greenfoot.org</a>
+  </div>
+
+  <script>
+    const iframe = document.getElementById("greenfootGame");
+    const fallback = document.getElementById("fallback");
+    let loaded = false;
+
+    iframe.addEventListener("load", () => loaded = true);
+
+    // If iframe doesn't load after 5 seconds, show fallback
+    setTimeout(() => {
+      if (!loaded) {
+        iframe.style.display = "none";
+        fallback.style.display = "flex";
+      }
+    }, 5000);
+  </script>
+</body>
+</html>
