@@ -1,0 +1,78 @@
+/* App.css */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'serif';
+  background-color: #FFFBEB;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.header {
+  padding: 1rem;
+  text-align: center;
+  background-color: #FEF3C7;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.controls {
+  margin-top: 0.5rem;
+}
+
+.pages-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.pages {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+
+.page {
+  background-color: #FFF8DC;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.arrow {
+  background-color: #FBBF24;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.arrow.left {
+  left: 0;
+}
+
+.arrow.right {
+  right: 0;
+}
+
+footer {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  background-color: #FEF3C7;
+}
