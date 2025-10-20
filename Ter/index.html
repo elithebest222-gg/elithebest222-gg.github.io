@@ -2,13 +2,13 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Game Web Port</title>
+  <title>Web Game Port</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: black;
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -32,6 +32,15 @@
       background: lime;
       transition: width 0.2s;
     }
+    #percent {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -41,19 +50,22 @@
     <p id="percent">0%</p>
   </div>
 
+  <!-- JS-DOS library -->
   <script src="https://cdn.jsdelivr.net/npm/js-dos@7.4.1/dist/js-dos.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/js-dos@7.4.1/dist/js-dos.css" />
 
   <script>
-    const gameUrl = "https://www.dropbox.com/scl/fi/c5q2pws4s8erppz8tn543/game.zip?rlkey=knnxal16pkicjy84mkbvy4l1z&st=ahnexx2r&dl=1";
+    const gameUrl = "https://archive.org/download/game_20251020_202510/game.zip";
     const percentEl = document.getElementById("percent");
     const fillEl = document.getElementById("fill");
 
     Dos(document.body).run(gameUrl, {
       onprogress: (stage, total, loaded) => {
-        const percent = Math.floor((loaded / total) * 100);
-        fillEl.style.width = percent + "%";
-        percentEl.textContent = percent + "%";
+        if (total > 0) {
+          const percent = Math.floor((loaded / total) * 100);
+          fillEl.style.width = percent + "%";
+          percentEl.textContent = percent + "%";
+        }
       }
     }).then((ci) => {
       document.getElementById("progress-container").remove();
