@@ -2,90 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ultimate Mortal Kombat 3 (SNES)</title>
+  <title>Ultimate Mortal Kombat 3 (SNES Web Port)</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       background: #000;
-      color: white;
-      text-align: center;
+      color: #fff;
       font-family: sans-serif;
+      text-align: center;
     }
-    #canvas {
-      background: #000;
+    #screen {
+      image-rendering: pixelated;
       width: 640px;
       height: 480px;
-      image-rendering: pixelated;
+      margin-top: 20px;
+      border: 2px solid #444;
+    }
+    #loading {
       margin-top: 10px;
-    }
-    #progress {
-      width: 640px;
-      height: 20px;
-      background: #333;
-      margin: 10px auto;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    #bar {
-      height: 100%;
-      width: 0%;
-      background: limegreen;
-      transition: width 0.3s;
     }
   </style>
 </head>
 <body>
   <h1>Ultimate Mortal Kombat 3 (SNES)</h1>
-  <div id="progress"><div id="bar"></div></div>
-  <canvas id="canvas" width="256" height="224"></canvas>
+  <canvas id="screen" width="256" height="224"></canvas>
+  <div id="loading">Loading ROM...</div>
 
+  <script src="https://cdn.jsdelivr.net/gh/bfirsh/jsnes/dist/jsnes.min.js"></script>
   <script>
-    const canvas = document.getElementById("canvas");
+    const canvas = document.getElementById("screen");
     const ctx = canvas.getContext("2d");
-    const bar = document.getElementById("bar");
+    const loading = document.getElementById("loading");
 
-    // Load the emulator
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/gh/andreas-jonsson/snes9x-js@master/snes9x.js";
-    document.body.appendChild(script);
+    // Create emulator
+    const nes = new jsnes.NES({
+      onFrame(frameBuffer) {
+        const imageData = ctx.getImageData(0, 0, 256, 224);
+        for (let i = 0; i < frameBuffer.length; i++) {
+          imageData.data[i] = frameBuffer[i];
+        }
+        ctx.putImageData(imageData, 0, 0);
+      },
+      onAudioSample() {}
+    });
 
-    script.onload = () => {
-      console.log("Snes9x loaded!");
-      fetch("Ultimate Mortal Kombat 3 (USA).sfc")
-        .then(res => {
-          const contentLength = res.headers.get("content-length");
-          let loaded = 0;
-          const reader = res.body.getReader();
-          const chunks = [];
-          function pump() {
-            return reader.read().then(({done, value}) => {
-              if (done) return;
-              chunks.push(value);
-              loaded += value.length;
-              if (contentLength) {
-                const percent = Math.floor((loaded / contentLength) * 100);
-                bar.style.width = percent + "%";
-              }
-              return pump();
-            });
-          }
-          return pump().then(() => new Blob(chunks));
-        })
-        .then(blob => blob.arrayBuffer())
-        .then(buffer => {
-          bar.style.width = "100%";
-          const module = Snes9xModule({ canvas });
-          module.then(m => {
-            m.FS_createDataFile("/", "game.sfc", new Uint8Array(buffer), true, true);
-            m.ccall("load_rom", null, ["string"], ["game.sfc"]);
-            m.ccall("mainloop", null, [], []);
-          });
-        })
-        .catch(err => {
-          console.error("Error loading ROM:", err);
-          alert("Could not load ROM.");
-        });
-    };
+    fetch("Ultimate Mortal Kombat 3 (USA).sfc")
+      .then(res => res.arrayBuffer())
+      .then(buffer => {
+        loading.textContent = "ROM loaded! Starting...";
+        nes.loadROM(new Uint8Array(buffer));
+        setInterval(() => nes.frame(), 1000 / 60);
+        loading.remove();
+      })
+      .catch(err => {
+        console.error(err);
+        loading.textContent = "Error loading ROM file. Make sure it's in the same folder as this HTML.";
+      });
   </script>
 </body>
 </html>
