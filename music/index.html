@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GN-Music — Spotify Preview (Client ID login)</title>
+<style>
+:root{
+  --bg:#0f1720; --panel:#0b1220; --muted:#9aa4b2; --accent:#1db954; --soft: rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial;color:#e6eef6;background:linear-gradient(180deg,var(--bg),#07101a);min-height:100vh}
+.app{display:grid;grid-template-columns:320px 1fr;gap:18px;padding:18px;max-width:1200px;margin:24px auto}
+.sidebar{background:var(--panel);border-radius:12px;padding:14px;min-height:520px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+.main{background:linear-gradient(180deg,var(--soft),transparent);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(2,6,23,0.45);display:flex;flex-direction:column}
+.brand{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#3ad29f);display:flex;align-items:center;justify-content:center;color:#012;font-weight:700}
+h1{font-size:16px;margin:0}
+p.sub{margin:0;font-size:12px;color:var(--muted)}
+.search{display:flex;gap:8px;margin-top:12px}
+.search input{flex:1;padding:10px;border-radius:10px;border:0;background:var(--soft);color:inherit}
+.search button{background:var(--accent);border:0;padding:8px 12px;border-radius:10px;color:#022;font-weight:700;cursor:pointer}
+.results{margin-top:12px;overflow:auto;max-height:220px;padding-right:6px}
+.result{display:flex;gap:10px;padding:8px;border-radius:8px;align-items:center;cursor:pointer}
+.result:hover{background:rgba(255,255,255,0.02)}
+.thumb{width:56px;height:56px;border-radius:6px;background:#223}
+.meta{flex:1}
+.meta .title{font-size:13px;margin:0}
+.meta .channel{font-size:12px;color:var(--muted);margin-top:4px}
+.add-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:6px 8px;border-radius:8px;color:var(--muted);cursor:pointer}
+.queue{margin-top:14px}
+.queue h3{margin:6px 0 8px 0;font-size:13px}
+.queue-list{display:flex;flex-direction:column;gap:8px;max-height:250px;overflow:auto;padding-right:6px}
+.qitem{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.008), transparent)}
+.qitem .qs{flex:1}
+.controls{display:flex;align-items:center;gap:12px;margin-top:14px}
+.player-top{display:flex;gap:18px}
+.cover{width:320px;border-radius:12px;background:var(--panel);padding:12px;display:flex;flex-direction:column;align-items:center}
+.cover img{width:100%;height:180px;border-radius:8px;object-fit:cover;background:#0b1220}
+.track-info{width:100%;margin-top:12px}
+.track-info h2{margin:0;font-size:18px}
+.track-info p{margin:6px 0 0 0;color:var(--muted)}
+.player-right{flex:1;display:flex;flex-direction:column}
+.playback{display:flex;flex-direction:column;margin-top:12px}
+.progress{height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;cursor:pointer}
+.progress .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#52d58b)}
+.time-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.big-controls{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px}
+.btn{background:transparent;border:0;padding:10px;border-radius:10px;color:inherit;cursor:pointer}
+.btn.play{background:var(--accent);color:#012;font-weight:700;padding:10px 14px}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.02)}
+.footer .left{display:flex;gap:10px;align-items:center}
+.volume{display:flex;gap:8px;align-items:center}
+.small{font-size:12px;color:var(--muted)}
+.auth-row{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:8px}
+@media (max-width:980px){.app{grid-template-columns:1fr}.cover{width:100%}.player-top{flex-direction:column}}
+/* login overlay */
+#loginOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,11,0.7);z-index:9999}
+.loginBox{background:var(--panel);padding:22px;border-radius:12px;width:92%;max-width:420px;text-align:center}
+.loginBox h2{margin:0 0 12px 0}
+.loginLink{display:inline-block;background:var(--accent);color:#012;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">GN</div>
+      <div>
+        <h1>GN-Music</h1>
+        <p class="sub">Spotify Preview Player</p>
+      </div>
+    </div>
+
+    <div class="auth-row" id="authRow" style="display:none">
+      <button id="logoutBtn" class="add-btn">Logout</button>
+    </div>
+
+    <div class="search">
+      <input id="searchInput" placeholder="Search song or artist (Spotify)" />
+      <button id="searchBtn">Search</button>
+    </div>
+
+    <div class="results" id="results"></div>
+
+    <div class="queue">
+      <h3>Queue</h3>
+      <div class="queue-list" id="queueList"></div>
+      <div class="controls">
+        <button id="shuffleBtn" class="add-btn">Shuffle</button>
+        <button id="clearBtn" class="add-btn">Clear</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="player-top">
+      <div class="cover">
+        <img id="coverArt" src="https://i.imgur.com/3Z3QF3P.png" alt="cover" />
+        <div class="track-info">
+          <h2 id="trackTitle">Nothing playing</h2>
+          <p id="trackChannel" class="sub">—</p>
+        </div>
+      </div>
+
+      <div class="player-right">
+        <audio id="audio" preload="auto"></audio>
+
+        <div class="playback">
+          <div class="progress" id="progress"><div class="bar" id="progressBar"></div></div>
+          <div class="time-row"><span id="curTime">0:00</span><span id="durTime">0:00</span></div>
+
+          <div class="big-controls">
+            <button id="prevBtn" class="btn">⏮</button>
+            <button id="playBtn" class="btn play">Play</button>
+            <button id="nextBtn" class="btn">⏭</button>
+          </div>
+
+          <div class="footer">
+            <div class="left">
+              <div class="volume small">Vol <input id="volSlider" type="range" min="0" max="100" value="50"></div>
+              <div class="small" id="status">Stopped</div>
+            </div>
+            <div class="small">Queue saved in localStorage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Login overlay (shown when no token) -->
+<div id="loginOverlay" style="display:none">
+  <div class="loginBox" id="loginBox">
+    <h2>Login to Spotify</h2>
+    <p style="color:var(--muted);margin:0 0 12px 0">Click to sign in with Spotify and allow searching.</p>
+    <a id="loginBtn" class="loginLink" href="#">Login with Spotify</a>
+    <div style="margin-top:12px;color:var(--muted);font-size:13px">Token expires — you'll be asked to re-login later.</div>
+  </div>
+</div>
+
+<script>
+/*
+  Single-file Nonoki-style Spotify preview player using Implicit Grant.
+  You supplied the CLIENT_ID. No server required.
+*/
+
+// ----- CONFIG -----
+const CLIENT_ID = 'db211777f3a541aaa90741fa20b176fd'; // your client id
+const REDIRECT_URI = window.location.origin + window.location.pathname; // returns to same page
+const SCOPES = ''; // no special scopes needed for searching/public previews
+const TOKEN_KEY = 'spotify_token_info'; // stored as JSON {token,expiresAt}
+
+// ----- token helpers -----
+function saveToken(token, expiresIn){
+  const expiresAt = Date.now() + (expiresIn * 1000) - 5000; // small buffer
+  localStorage.setItem(TOKEN_KEY, JSON.stringify({token,expiresAt}));
+}
+function getSavedToken(){
+  const raw = localStorage.getItem(TOKEN_KEY);
+  if(!raw) return null;
+  try{
+    const obj = JSON.parse(raw);
+    if(!obj.token || !obj.expiresAt) return null;
+    if(Date.now() > obj.expiresAt){ localStorage.removeItem(TOKEN_KEY); return null; }
+    return obj.token;
+  }catch(e){ return null; }
+}
+function clearToken(){ localStorage.removeItem(TOKEN_KEY); }
+
+// parse token from URL hash after redirect
+function parseTokenFromHash(){
+  if(!window.location.hash) return null;
+  const params = new URLSearchParams(window.location.hash.substring(1));
+  const access_token = params.get('access_token');
+  const expires_in = params.get('expires_in');
+  if(access_token){
+    // store and clear hash
+    saveToken(access_token, Number(expires_in) || 3600);
+    window.location.hash = '';
+    return access_token;
+  }
+  return null;
+}
+
+// build authorize URL
+function makeAuthUrl(){
+  const url = new URL('https://accounts.spotify.com/authorize');
+  url.searchParams.set('client_id', CLIENT_ID);
+  url.searchParams.set('response_type', 'token');
+  url.searchParams.set('redirect_uri', REDIRECT_URI);
+  if(SCOPES) url.searchParams.set('scope', SCOPES);
+  // show dialog true so user can select account if needed
+  url.searchParams.set('show_dialog','true');
+  return url.toString();
+}
+
+// ----- state & DOM -----
+let SPOTIFY_TOKEN = getSavedToken() || parseTokenFromHash();
+const audio = document.getElementById('audio');
+let queue = JSON.parse(localStorage.getItem('gn_queue') || '[]');
+let currentIndex = Number(localStorage.getItem('gn_currentIndex') || '-1');
+
+const resultsEl = document.getElementById('results');
+const queueListEl = document.getElementById('queueList');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const progressEl = document.getElementById('progress');
+const progressBar = document.getElementById('progressBar');
+const curTimeEl = document.getElementById('curTime');
+const durTimeEl = document.getElementById('durTime');
+const volSlider = document.getElementById('volSlider');
+const coverArt = document.getElementById('coverArt');
+const trackTitle = document.getElementById('trackTitle');
+const trackChannel = document.getElementById('trackChannel');
+const statusEl = document.getElementById('status');
+const shuffleBtn = document.getElementById('shuffleBtn');
+const clearBtn = document.getElementById('clearBtn');
+const loginOverlay = document.getElementById('loginOverlay');
+const loginBtn = document.getElementById('loginBtn');
+const authRow = document.getElementById('authRow');
+const logoutBtn = document.getElementById('logoutBtn');
+
+// show/hide login overlay
+function ensureLoginUI(){
+  SPOTIFY_TOKEN = getSavedToken();
+  if(!SPOTIFY_TOKEN){
+    loginOverlay.style.display = 'flex';
+    authRow.style.display = 'none';
+    // set login link
+    loginBtn.href = makeAuthUrl();
+    return false;
+  } else {
+    loginOverlay.style.display = 'none';
+    authRow.style.display = 'flex';
+    return true;
+  }
+}
+
+// formatting
+function fmtTime(s){ if(!s||isNaN(s)) return '0:00'; s=Math.floor(s); return Math.floor(s/60)+':' + ((s%60<10?'0':'')+(s%60)); }
+function escapeHtml(str){ return (str+'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+// queue render / state
+function renderQueue(){
+  queueListEl.innerHTML='';
+  queue.forEach((item,i)=>{
+    const div=document.createElement('div'); div.className='qitem';
+    div.innerHTML = `
+      <img src="${item.thumbnail}" width="56" height="56" style="border-radius:6px">
+      <div class="qs">
+        <div style="font-size:13px">${escapeHtml(item.title)}</div>
+        <div style="font-size:12px;color:var(--muted)">${escapeHtml(item.artist)}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="add-btn" data-i="${i}" data-action="play">Play</button>
+        <button class="add-btn" data-i="${i}" data-action="remove">X</button>
+      </div>`;
+    queueListEl.appendChild(div);
+  });
+}
+function saveState(){ localStorage.setItem('gn_queue', JSON.stringify(queue)); localStorage.setItem('gn_currentIndex', String(currentIndex)); }
+
+// ----- Spotify search -----
+async function searchSpotify(q){
+  if(!ensureLoginUI()) return;
+  resultsEl.innerHTML = '<div style="padding:12px;color:var(--muted)">Searching...</div>';
+  try{
+    const res = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=track&limit=8`, {
+      headers: { 'Authorization': 'Bearer ' + getSavedToken() }
+    });
+    if(res.status===401){
+      // token expired or invalid
+      clearToken();
+      ensureLoginUI();
+      resultsEl.innerHTML = '<div style="padding:12px;color:var(--muted)">Session expired — please log in again.</div>';
+      return;
+    }
+    const data = await res.json();
+    if(!data.tracks || !data.tracks.items || data.tracks.items.length===0){
+      resultsEl.innerHTML = '<div style="padding:12px;color:var(--muted)">No results</div>'; return;
+    }
+    resultsEl.innerHTML = '';
+    data.tracks.items.forEach(track=>{
+      const preview = track.preview_url; // may be null
+      const thumb = (track.album.images && track.album.images[1])?track.album.images[1].url:(track.album.images[0]?track.album.images[0].url:'');
+      const el = document.createElement('div'); el.className='result';
+      el.innerHTML = `
+        <img class="thumb" src="${thumb}">
+        <div class="meta"><div class="title">${escapeHtml(track.name)}</div><div class="channel">${escapeHtml(track.artists.map(a=>a.name).join(', '))}</div></div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <button class="add-btn" data-preview="${preview||''}" data-title="${escapeHtml(track.name)}" data-artist="${escapeHtml(track.artists.map(a=>a.name).join(', '))}" data-thumb="${thumb}">${preview? 'Add' : 'No preview'}</button>
+          <a class="add-btn" style="text-align:center" href="${track.external_urls.spotify}" target="_blank" rel="noreferrer">Open in Spotify</a>
+        </div>`;
+      resultsEl.appendChild(el);
+    });
+  }catch(err){
+    console.error('Spotify search error', err);
+    resultsEl.innerHTML = `<div style="padding:12px;color:var(--muted)">Search failed: ${err.message}</div>`;
+  }
+}
+
+// ----- queue & playback -----
+function addToQueue(preview, title, artist, thumb){
+  if(!preview){ statusEl.textContent = 'No preview available for this track'; setTimeout(()=>statusEl.textContent='',1500); return; }
+  queue.push({preview, title, artist, thumbnail: thumb});
+  saveState(); renderQueue();
+  statusEl.textContent = 'Added to queue';
+  setTimeout(()=>statusEl.textContent='',1200);
+  if(currentIndex === -1){ currentIndex = 0; playIndex(0); }
+}
+function playIndex(i){
+  if(i<0 || i>=queue.length) return;
+  currentIndex = i; saveState();
+  const it = queue[i];
+  coverArt.src = it.thumbnail || 'https://i.imgur.com/3Z3QF3P.png';
+  trackTitle.textContent = it.title;
+  trackChannel.textContent = it.artist;
+  audio.src = it.preview;
+  audio.play().catch(err=>{ console.warn('Audio play failed', err); statusEl.textContent = 'Playback blocked'; setTimeout(()=>statusEl.textContent='',1500); });
+  statusEl.textContent = 'Playing';
+  playBtn.textContent = 'Pause';
+}
+function removeIndex(i){ queue.splice(i,1); if(currentIndex===i) currentIndex=-1; renderQueue(); saveState(); }
+function shuffleQueue(){ for(let i=queue.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [queue[i],queue[j]]=[queue[j],queue[i]] } saveState(); renderQueue(); statusEl.textContent='Shuffled'; setTimeout(()=>statusEl.textContent='',1000); }
+
+// ----- UI events -----
+document.addEventListener('click', (e)=>{
+  const t = e.target;
+  if(t.matches('.add-btn[data-preview]')) addToQueue(t.dataset.preview, t.dataset.title, t.dataset.artist, t.dataset.thumb);
+  if(t.matches('.add-btn[data-action]')){
+    const idx = Number(t.dataset.i);
+    if(t.dataset.action === 'play') playIndex(idx);
+    if(t.dataset.action === 'remove') removeIndex(idx);
+  }
+});
+searchBtn.addEventListener('click', ()=>{ const q = searchInput.value.trim(); if(!q) return; searchSpotify(q); });
+searchInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') searchBtn.click(); });
+playBtn.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); playBtn.textContent='Pause'; statusEl.textContent='Playing'; } else { audio.pause(); playBtn.textContent='Play'; statusEl.textContent='Paused'; } });
+prevBtn.addEventListener('click', ()=>{ if(currentIndex>0) playIndex(currentIndex-1); });
+nextBtn.addEventListener('click', ()=>{ if(currentIndex < queue.length-1) playIndex(currentIndex+1); });
+volSlider.addEventListener('input', ()=>{ audio.volume = Number(volSlider.value)/100; });
+shuffleBtn.addEventListener('click', ()=>shuffleQueue());
+clearBtn.addEventListener('click', ()=>{ queue=[]; currentIndex=-1; saveState(); renderQueue(); });
+
+// login & logout
+loginBtn.addEventListener('click', ()=> { /* href handles redirect */ });
+logoutBtn.addEventListener('click', ()=>{ clearToken(); location.reload(); });
+
+// progress / time updates
+audio.addEventListener('timeupdate', ()=>{
+  curTimeEl.textContent = fmtTime(audio.currentTime || 0);
+  durTimeEl.textContent = fmtTime(audio.duration || 0);
+  const pct = (audio.duration>0 ? (audio.currentTime / audio.duration * 100) : 0);
+  progressBar.style.width = pct + '%';
+  if(audio.ended){
+    if(currentIndex < queue.length - 1) playIndex(currentIndex+1);
+    else { playBtn.textContent='Play'; statusEl.textContent='Ended'; }
+  }
+});
+progressEl.addEventListener('click', e=>{
+  if(!audio.duration) return;
+  const rect = progressEl.getBoundingClientRect(); const x = e.clientX - rect.left; const pct = x / rect.width;
+  audio.currentTime = pct * audio.duration;
+});
+
+// initialize UI
+renderQueue();
+ensureLoginUI();
+
+// if user logged in earlier parse token and show UI
+(function initTokenFromHash(){
+  // If token was in the hash, parseTokenFromHash saved it; ensureLoginUI will hide overlay
+  SPOTIFY_TOKEN = getSavedToken();
+  ensureLoginUI();
+})();
+</script>
+</body>
+</html>
