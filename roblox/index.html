@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>roblox - Truffled</title>
+<title>GN-MATH ROBLOX</title>
 <style>
 html, body {
     margin: 0;
@@ -30,6 +30,46 @@ iframe {
     cursor: pointer;
     z-index: 9999;
 }
+
+/* --- Popup styles --- */
+#popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+#popupBox {
+    background: #fff;
+    color: #000;
+    padding: 25px 35px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    font-family: Arial, sans-serif;
+    max-width: 90%;
+}
+
+#popupBox button {
+    margin-top: 15px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#popupBox button:hover {
+    background: #45a049;
+}
 </style>
 </head>
 <body>
@@ -38,5 +78,18 @@ iframe {
     <img id="truffled-logo" src="https://snoopy.mreasandiego.com/png/logo.png" alt="Logo">
 </a>
 
+<!-- Popup Message -->
+<div id="popupOverlay">
+  <div id="popupBox">
+    <h2>Made by GN-MATH and Froggie Team on Discord</h2>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
+<script>
+function closePopup() {
+  document.getElementById('popupOverlay').style.display = 'none';
+}
+</script>
 </body>
 </html>
