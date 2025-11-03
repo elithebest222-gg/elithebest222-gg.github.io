@@ -3,77 +3,42 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Roblox by GN-MATH</title>
+  <title>Roblox - GN-MATH</title>
   <style>
-    :root{--bg:#0b1020;--card:#0f1724;--accent:#06f;--glass: rgba(255,255,255,0.04)}
+    :root{--bg:#0b1020;--accent:#06f;--glass: rgba(255,255,255,0.04)}
     html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
     body{background:linear-gradient(180deg,#020217 0%, #07102a 100%);color:#e6eef8;display:flex;flex-direction:column}
     .topbar{display:flex;align-items:center;gap:.75rem;padding:10px 16px;background:rgba(0,0,0,0.12);backdrop-filter:blur(6px)}
     .brand{font-weight:700;font-size:1rem;letter-spacing:.6px}
     .actions{margin-left:auto;display:flex;gap:.5rem}
-    button{background:var(--glass);border:1px solid rgba(255,255,255,0.04);padding:.45rem .7rem;border-radius:10px;color:inherit;cursor:pointer}
-    button:hover{opacity:.95}
-    .frame-wrap{flex:1;display:flex;align-items:stretch;padding:12px}
-    iframe{flex:1;border-radius:12px;border:0;box-shadow:0 6px 30px rgba(2,6,23,0.7);min-height:300px}
+    button{background:var(--glass);border:1px solid rgba(255,255,255,0.06);padding:.45rem .8rem;border-radius:10px;color:inherit;cursor:pointer;transition:0.2s}
+    button:hover{opacity:.9;transform:scale(1.03)}
+    iframe{flex:1;border:0;border-radius:12px;margin:12px;box-shadow:0 6px 30px rgba(2,6,23,0.7)}
     .notice{padding:12px;text-align:center;font-size:.95rem;color:#cfe6ff}
-    .fallback{display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px}
-    .fallback button{background:var(--accent);border:none;padding:.6rem 1rem;border-radius:8px;color:white;font-weight:600;cursor:pointer}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60}
-    .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)}
-    .modal-card{position:relative;background:#0f1724;padding:18px;border-radius:14px;z-index:61;box-shadow:0 10px 40px rgba(2,6,23,0.7);min-width:260px;text-align:center}
-    .modal-card h3{margin:0 0 6px 0}
-    .modal-card p{margin:0 0 12px 0;color:#bcd9ff}
   </style>
 </head>
 <body>
   <div class="topbar">
-    <div class="brand">Roblox by GN-MATH</div>
+    <div class="brand">Roblox - GN-MATH</div>
     <div class="actions">
+      <button id="open-direct">Direct Link</button>
       <button id="open-blank">ABOUT:BLANK</button>
-      <button id="fullscreen">Fullscreen</button>
-      <button id="about-btn">About</button>
     </div>
   </div>
 
-  <div class="frame-wrap" id="frameWrap">
-    <iframe id="embedFrame" src="https://math4kidz.wiki/embed.html#https://75.ip.nowgg.fun/apps/a/19900/b.html" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-  </div>
-
-  <div class="fallback" id="fallback">
-    <div>⚠️ The embed failed to load. This might be blocked on your network.</div>
-    <button id="open-direct">Open Directly</button>
-  </div>
+  <iframe id="embedFrame" src="https://powerschool.anjumanallana.in/active/go/hvtrs8%2F-77.kp%2Cnmweg%2Cfwn-arpq%2Fc%2F39%3B02%2F%60.jtol" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
 
   <div class="notice">
-    If the embed doesn't load, try the "Open Directly" button or disable blockers.
-  </div>
-
-  <!-- About Modal -->
-  <div class="modal" id="aboutModal">
-    <div class="modal-backdrop"></div>
-    <div class="modal-card">
-      <h3>About This Page</h3>
-      <p>This was made by GN-MATH and if a bug, go to the chatroom and post ur bug.</p>
-      <button id="closeModal">Close</button>
-    </div>
+    If the embed doesn’t load, try using the “Direct Link” button.
   </div>
 
   <script>
-    alert('This was made by GN-MATH and if a bug, go to the chatroom and post ur bug');
+    alert("This was made by GN-MATH. If a bug appears, please report it in the chatroom.");
 
     const frame = document.getElementById('embedFrame');
-    const fallback = document.getElementById('fallback');
-
-    // Detect if the iframe fails to load (blocked)
-    setTimeout(() => {
-      if (!frame.contentWindow || frame.clientHeight < 100) {
-        frame.style.display = 'none';
-        fallback.style.display = 'flex';
-      }
-    }, 2000);
 
     document.getElementById('open-direct').addEventListener('click', () => {
-      window.open("https://math4kidz.wiki/embed.html#https://75.ip.nowgg.fun/apps/a/19900/b.html", "_blank");
+      window.open("https://powerschool.anjumanallana.in/active/go/hvtrs8%2F-77.kp%2Cnmweg%2Cfwn-arpq%2Fc%2F39%3B02%2F%60.jtol", "_blank");
     });
 
     document.getElementById('open-blank').addEventListener('click', () => {
@@ -82,18 +47,6 @@
       newWin.document.open();
       newWin.document.write(html);
       newWin.document.close();
-    });
-
-    document.getElementById('fullscreen').addEventListener('click', () => {
-      frame.requestFullscreen().catch(() => {});
-    });
-
-    const aboutModal = document.getElementById('aboutModal');
-    document.getElementById('about-btn').addEventListener('click', () => {
-      aboutModal.style.display = 'flex';
-    });
-    document.getElementById('closeModal').addEventListener('click', () => {
-      aboutModal.style.display = 'none';
     });
   </script>
 </body>
