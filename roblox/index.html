@@ -16,6 +16,13 @@
     .frame-wrap{flex:1;display:flex;align-items:stretch;padding:12px}
     iframe{flex:1;border-radius:12px;border:0;box-shadow:0 6px 30px rgba(2,6,23,0.7);min-height:300px}
     .notice{padding:12px;text-align:center;font-size:.95rem;color:#cfe6ff}
+    .fallback{display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px}
+    .fallback button{background:var(--accent);border:none;padding:.6rem 1rem;border-radius:8px;color:white;font-weight:600;cursor:pointer}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60}
+    .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)}
+    .modal-card{position:relative;background:#0f1724;padding:18px;border-radius:14px;z-index:61;box-shadow:0 10px 40px rgba(2,6,23,0.7);min-width:260px;text-align:center}
+    .modal-card h3{margin:0 0 6px 0}
+    .modal-card p{margin:0 0 12px 0;color:#bcd9ff}
   </style>
 </head>
 <body>
@@ -23,19 +30,51 @@
     <div class="brand">Roblox by GN-MATH</div>
     <div class="actions">
       <button id="open-blank">ABOUT:BLANK</button>
+      <button id="fullscreen">Fullscreen</button>
+      <button id="about-btn">About</button>
     </div>
   </div>
 
   <div class="frame-wrap" id="frameWrap">
-    <iframe id="embedFrame" src="https://math4kidz.wiki/active/go/hvtrs8%2F-77.kp%2Cnmweg%2Cfwn-arpq%2Fc%2F39%3B02%2F%60.jtol" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    <iframe id="embedFrame" src="https://math4kidz.wiki/embed.html#https://75.ip.nowgg.fun/apps/a/19900/b.html" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>
+
+  <div class="fallback" id="fallback">
+    <div>⚠️ The embed failed to load. This might be blocked on your network.</div>
+    <button id="open-direct">Open Directly</button>
   </div>
 
   <div class="notice">
-    If the game doesn't load, try refreshing the page or disable blockers.
+    If the embed doesn't load, try the "Open Directly" button or disable blockers.
+  </div>
+
+  <!-- About Modal -->
+  <div class="modal" id="aboutModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <h3>About This Page</h3>
+      <p>This was made by GN-MATH and if a bug, go to the chatroom and post ur bug.</p>
+      <button id="closeModal">Close</button>
+    </div>
   </div>
 
   <script>
     alert('This was made by GN-MATH and if a bug, go to the chatroom and post ur bug');
+
+    const frame = document.getElementById('embedFrame');
+    const fallback = document.getElementById('fallback');
+
+    // Detect if the iframe fails to load (blocked)
+    setTimeout(() => {
+      if (!frame.contentWindow || frame.clientHeight < 100) {
+        frame.style.display = 'none';
+        fallback.style.display = 'flex';
+      }
+    }, 2000);
+
+    document.getElementById('open-direct').addEventListener('click', () => {
+      window.open("https://math4kidz.wiki/embed.html#https://75.ip.nowgg.fun/apps/a/19900/b.html", "_blank");
+    });
 
     document.getElementById('open-blank').addEventListener('click', () => {
       const html = document.documentElement.outerHTML;
@@ -43,6 +82,18 @@
       newWin.document.open();
       newWin.document.write(html);
       newWin.document.close();
+    });
+
+    document.getElementById('fullscreen').addEventListener('click', () => {
+      frame.requestFullscreen().catch(() => {});
+    });
+
+    const aboutModal = document.getElementById('aboutModal');
+    document.getElementById('about-btn').addEventListener('click', () => {
+      aboutModal.style.display = 'flex';
+    });
+    document.getElementById('closeModal').addEventListener('click', () => {
+      aboutModal.style.display = 'none';
     });
   </script>
 </body>
