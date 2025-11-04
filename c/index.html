@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C.AI by GN-MATH</title>
+<style>
+body {
+  background-color: #0b0c10;
+  color: white;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+}
+header {
+  text-align: center;
+  background: linear-gradient(90deg, #1f2833, #0b0c10);
+  padding: 15px;
+  font-size: 1.6em;
+  color: #66fcf1;
+  font-weight: bold;
+  box-shadow: 0 2px 5px #000;
+}
+#character-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1f2833;
+  padding: 10px;
+  gap: 10px;
+}
+select, button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #45a29e;
+  color: white;
+  font-size: 1em;
+}
+button:hover {
+  background: #66fcf1;
+  color: #000;
+}
+#chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 80%;
+}
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+.message.bot {
+  align-self: flex-start;
+}
+.bubble {
+  background: #1f2833;
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 400px;
+  line-height: 1.4;
+}
+.user .bubble {
+  background: #45a29e;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #333;
+  object-fit: cover;
+}
+#input-area {
+  display: flex;
+  border-top: 2px solid #45a29e;
+}
+#message-input {
+  flex: 1;
+  padding: 12px;
+  background: #0b0c10;
+  color: white;
+  border: none;
+  font-size: 1em;
+  outline: none;
+}
+#send-btn {
+  background: #45a29e;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 1em;
+}
+#send-btn:hover {
+  background: #66fcf1;
+  color: #000;
+}
+</style>
+</head>
+<body>
+
+<header> C.AI by GN-MATH 💬</header>
+
+<div id="character-bar">
+  <select id="character-select">
+    <option value="default">Choose a Character</option>
+  </select>
+  <button onclick="createCharacter()">+ Create Character</button>
+  <button onclick="deleteCharacter()">🗑 Delete Character</button>
+</div>
+
+<div id="chat-box"></div>
+
+<div id="input-area">
+  <input type="text" id="message-input" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendMessage()">
+  <button id="send-btn" onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+// Your OpenRouter API Key
+const OPENROUTER_API_KEY = "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";
+
+// Load characters and chat history
+let characters = JSON.parse(localStorage.getItem("characters")) || [
+  { name: "Luna", personality: "friendly, playful catgirl AI, speaks in a cheerful and expressive roleplay style", avatar: "https://i.imgur.com/E6bFeXK.png" },
+  { name: "Aiden", personality: "confident swordsman AI, flirty and protective, roleplay style", avatar: "https://i.imgur.com/WJgM7sl.png" }
+];
+let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+let currentCharacter = null;
+
+// DOM elements
+const chatBox = document.getElementById("chat-box");
+const charSelect = document.getElementById("character-select");
+const msgInput = document.getElementById("message-input");
+
+// Save to localStorage
+function saveData() {
+  localStorage.setItem("characters", JSON.stringify(characters));
+  localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+}
+
+// Render characters in select dropdown
+function renderCharacters() {
+  charSelect.innerHTML = '<option value="default">Choose a Character</option>';
+  characters.forEach((char, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = char.name;
+    charSelect.appendChild(opt);
+  });
+}
+
+// Create new character
+function createCharacter() {
+  const name = prompt("Character name (optional):") || `Character${characters.length+1}`;
+  const personality = prompt("Roleplay personality/style:") || "friendly AI";
+  const avatar = prompt("Avatar URL (optional):") || "https://i.imgur.com/E6bFeXK.png";
+  characters.push({ name, personality, avatar });
+  saveData();
+  renderCharacters();
+}
+
+// Delete selected character
+function deleteCharacter() {
+  if(currentCharacter) {
+    const index = characters.findIndex(c=>c.name===currentCharacter.name);
+    if(index>-1){
+      characters.splice(index,1);
+      saveData();
+      renderCharacters();
+      chatBox.innerHTML = "";
+      chatHistory=[];
+      currentCharacter=null;
+      alert("Character deleted.");
+    }
+  } else {
+    alert("No character selected!");
+  }
+}
+
+// Change character
+charSelect.addEventListener("change", () => {
+  if(charSelect.value!=="default"){
+    currentCharacter = characters[charSelect.value];
+    chatBox.innerHTML="";
+    chatHistory=[];
+    saveData();
+  }
+});
+
+// Display message
+function displayMessage(role, text, avatar) {
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add("message", role);
+  const img = document.createElement("img");
+  img.classList.add("avatar");
+  img.src = avatar || (role==="user"?"https://i.imgur.com/1XcXH0K.png":"https://i.imgur.com/E6bFeXK.png");
+  const bubble = document.createElement("div");
+  bubble.classList.add("bubble");
+  bubble.innerHTML=text;
+  msgDiv.appendChild(img);
+  msgDiv.appendChild(bubble);
+  chatBox.appendChild(msgDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Send message
+async function sendMessage() {
+  const message = msgInput.value.trim();
+  if(!message || !currentCharacter){ alert("Select a character and type a message!"); return; }
+
+  displayMessage("user", message, "https://i.imgur.com/1XcXH0K.png");
+  msgInput.value="";
+  chatHistory.push({ role: "user", content: message });
+  saveData();
+
+  displayMessage("bot", "<i>Typing...</i>", currentCharacter.avatar);
+
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method:"POST",
+      headers:{
+        "Authorization":`Bearer ${OPENROUTER_API_KEY}`,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        model:"meta-llama/llama-3.3-70b-instruct:free",
+        messages:[
+          {role:"system", content:`You are ${currentCharacter.name}, ${currentCharacter.personality}. Always roleplay and respond in-character.`},
+          ...chatHistory,
+          {role:"user", content:message}
+        ]
+      })
+    });
+    const data = await response.json();
+    chatBox.lastChild.remove(); // remove Typing...
+    const reply = data.choices?.[0]?.message?.content || "Error: no response.";
+    displayMessage("bot", reply, currentCharacter.avatar);
+    chatHistory.push({role:"assistant", content:reply});
+    saveData();
+  } catch(err){
+    console.error(err);
+    chatBox.lastChild.remove();
+    displayMessage("bot", "⚠️ API error or busy.", currentCharacter.avatar);
+  }
+}
+
+// Load previous chat
+renderCharacters();
+chatHistory.forEach(msg=>displayMessage(msg.role, msg.content));
+</script>
+</body>
+</html>
