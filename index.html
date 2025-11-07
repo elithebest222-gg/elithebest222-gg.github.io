@@ -1,63 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GN Math Games</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GN-MATH</title>
 
-<!-- ✅ Manual AdSense Code (ONE TIME ONLY) -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9090015924020494"
-     crossorigin="anonymous"></script>
+  <!-- AdSense script (ONE time only) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9090015924020494"
+    crossorigin="anonymous"></script>
 
-<style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; margin: 0; }
-    header { background: #4CAF50; color: white; padding: 20px; font-size: 28px; }
-    .games-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 15px;
-        padding: 20px;
-        max-width: 900px;
-        margin: auto;
+  <style>
+    :root {
+      --max-content-width: 1100px;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      color: #111;
+    }
+    h1 {
+      margin-bottom: 12px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* Games grid (keeps your original styling but grid-based for rows) */
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 30px;
+      max-width: var(--max-content-width);
+      margin: 0 auto 20px;
+      align-items: start;
     }
     .game {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        font-size: 18px;
-        cursor: pointer;
+      text-decoration: none;
+      color: black;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: block;
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    .ad-container {
-        margin: 20px auto;
-        max-width: 728px;
+    .game img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
     }
-</style>
+    .game h3 {
+      margin: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .game:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
 
+    /* Ad container styling (responsive) */
+    .ad-break {
+      display: flex;
+      justify-content: center;
+      margin: 18px auto;
+      width: 100%;
+      max-width: 728px;
+    }
+    /* Make the ad responsive on narrow screens */
+    .ad-break ins.adsbygoogle {
+      display:block;
+      width:100%;
+      max-width:728px;
+      height:90px;
+      margin: 0 auto;
+    }
+    @media (max-width:480px){
+      .ad-break ins.adsbygoogle { height:50px; } /* mobile height */
+    }
+
+    /* Repos section (unchanged) */
+    #repos-section {
+      max-width: var(--max-content-width);
+      margin: 30px auto;
+      text-align: left;
+    }
+    #repo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    #repo-list li {
+      background: #f6f6f6;
+      padding: 10px 12px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .repo-links a { text-decoration: none; font-weight: 600; color: #0b66c3; }
+    .repo-meta { font-size: 12px; color: #333; }
+
+    @media (max-width:600px) {
+      .game img { height: 110px; }
+    }
+  </style>
 </head>
 <body>
+  <h1>🌌 GN-MATH 🎮</h1>
 
-<header>GN Math Games</header>
+  <!-- Games grid: split into two visual rows; ad inserted between first and second row -->
+  <div class="games" id="games-top">
+    <!-- 1 -->
+    <a href="https://elithebest222-gg.github.io/granny2" target="_blank" rel="noopener" class="game">
+      <img src="https://igrozoom.ru/Minigames/Horror_4/granny_chapter_two.jpg" alt="Granny 2">
+      <h3>Granny 2</h3>
+    </a>
+    <!-- 2 -->
+    <a href="https://elithebest222-gg.github.io/uk" target="_blank" rel="noopener" class="game">
+      <img src="https://shapes.inc/api/public/avatar/ultrakillrp" alt="ULTRAKILL">
+      <h3>ULTRAKILL</h3>
+    </a>
+    <!-- 3 -->
+    <a href="https://elithebest222-gg.github.io/Gmod" target="_blank" rel="noopener" class="game">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Garry%27s_Mod_logo.svg/1200px-Garry%27s_Mod_logo.svg.png" alt="Gmod">
+      <h3>Gmod</h3>
+    </a>
+    <!-- 4 -->
+    <a href="https://elithebest222-gg.github.io/notmyn/" target="_blank" rel="noopener" class="game">
+      <img src="https://howlongtobeat.com/games/147995_Thats_Not_My_Neighbor.jpg" alt="Not My Neighbor">
+      <h3>Not My Neighbor</h3>
+    </a>
+  </div>
 
-<p>Practice your math skills with fun and simple games! Choose any game to start learning.</p>
-
-<div class="games-grid">
-    <div class="game">Addition</div>
-    <div class="game">Subtraction</div>
-    <div class="game">Multiplication</div>
-    <div class="game">Division</div>
-</div>
-
-<!-- ✅ Ad Unit Under the Games -->
-<div class="ad-container">
+  <!-- AD BREAK inserted between rows (Option B) -->
+  <div class="ad-break" aria-hidden="false">
+    <!-- Responsive display ad unit (manual) -->
     <ins class="adsbygoogle"
-        style="display:inline-block;width:728px;height:90px"
-        data-ad-client="ca-pub-9090015924020494"
-        data-ad-slot="9354656582"></ins>
-</div>
+         data-ad-client="ca-pub-9090015924020494"
+         data-ad-slot="9354656582"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+  </div>
 
-<script>
+  <div class="games" id="games-bottom">
+    <!-- 5 -->
+    <a href="https://elithebest222-gg.github.io/bm/" target="_blank" rel="noopener" class="game">
+      <img src="https://play-lh.googleusercontent.com/rsQyCuie6S8Munc2Hv6IMpePP1g3c0okLkyKRXd1IimOryIBMZqymGKaOg7bZ6NMkhj3" alt="Bow Masters">
+      <h3>Bow Masters</h3>
+    </a>
+    <!-- 6 -->
+    <a href="https://elithebest222-gg.github.io/Karl/" target="_blank" rel="noopener" class="game">
+      <img src="https://www.gamenora.com/upload/games/thumbnails/Karlson.webp" alt="Karl">
+      <h3>Karl</h3>
+    </a>
+    <!-- 7 -->
+    <a href="https://elithebest222-gg.github.io/footb/" target="_blank" rel="noopener" class="game">
+      <img src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co951q.jpg" alt="Football Bros">
+      <h3>Football Bros</h3>
+    </a>
+    <!-- 8 -->
+    <a href="https://elithebest222-gg.github.io/codz" target="_blank" rel="noopener" class="game">
+      <img src="https://static.wikia.nocookie.net/callofduty/images/4/40/BlackOps_Zombies_BoxArt.jpg/revision/latest/scale-to-width/360?cb=20120311054428" alt="COD Zombies">
+      <h3>COD Zombies</h3>
+    </a>
+    <!-- 9 -->
+    <a href="https://elithebest222-gg.github.io/pt/" target="_blank" rel="noopener" class="game">
+      <img src="https://assets-prd.ignimgs.com/2022/12/02/pizza-tower-button-02-1670021139476.jpg" alt="Pizza Tower">
+      <h3>Pizza Tower</h3>
+    </a>
+  </div>
+
+  <section id="repos-section" aria-labelledby="repos-heading">
+    <h2 id="repos-heading">🔗 All Repositories from elithebest222-gg</h2>
+    <p style="margin-top:0; margin-bottom:8px; color: #444;">
+      Links below are fetched live from the GitHub API.
+    </p>
+    <ul id="repo-list"></ul>
+  </section>
+
+  <script>
+    /* push ad (required) and small log to confirm push occurred */
     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+    console.log("adsbygoogle.push() called for manual unit");
 
+    /* fetch GitHub repos (kept from your original) */
+    (function fetchAndRenderRepos() {
+      const username = 'elithebest222-gg';
+      const apiUrl = `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`;
+
+      function el(tag, props = {}, ...children) {
+        const n = document.createElement(tag);
+        Object.entries(props).forEach(([k, v]) => {
+          if (k === 'class') n.className = v;
+          else if (k === 'html') n.innerHTML = v;
+          else n.setAttribute(k, v);
+        });
+        children.flat().forEach(c => {
+          if (typeof c === 'string') n.appendChild(document.createTextNode(c));
+          else if (c) n.appendChild(c);
+        });
+        return n;
+      }
+
+      fetch(apiUrl)
+        .then(r => r.json())
+        .then(repos => {
+          const list = document.getElementById('repo-list');
+          if (!Array.isArray(repos) || repos.length === 0) {
+            list.appendChild(el('li', {}, 'No repositories found.'));
+            return;
+          }
+
+          repos.forEach(repo => {
+            const li = el('li');
+            const nameLink = el('a', { href: repo.html_url, target: '_blank', rel: 'noopener' }, repo.name);
+            const linksDiv = el('div', { class: 'repo-links' }, nameLink);
+
+            if (repo.has_pages) {
+              const homepageUrl = repo.homepage && repo.homepage.trim() !== ''
+                ? repo.homepage
+                : `https://${username}.github.io/${repo.name}/`;
+              const pagesLink = el('a', { href: homepageUrl, target: '_blank', rel: 'noopener' }, 'Pages');
+              linksDiv.appendChild(pagesLink);
+            }
+
+            const meta = el('div', { class: 'repo-meta' },
+              repo.description || 'No description',
+              ' • ★ ' + repo.stargazers_count,
+              ' • ',
+              repo.language || '—'
+            );
+
+            li.appendChild(linksDiv);
+            li.appendChild(meta);
+            list.appendChild(li);
+          });
+        })
+        .catch(err => {
+          const list = document.getElementById('repo-list');
+          list.innerHTML = '';
+          list.appendChild(el('li', {}, 'Failed to load repos: ' + err.message));
+        });
+    })();
+  </script>
 </body>
 </html>
