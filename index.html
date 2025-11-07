@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GN-MATH</title>
+  
+  <!-- ✅ Google AdSense Auto Ads -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9090015924020494"
+       crossorigin="anonymous"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-9090015924020494",
+      enable_page_level_ads: true
+    });
+  </script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,7 +29,6 @@
       font-weight: bold;
       letter-spacing: 2px;
     }
-    /* Games grid */
     .games {
       display: flex;
       flex-wrap: wrap;
@@ -50,8 +60,6 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
-    /* Repos section */
     #repos-section {
       max-width: 1000px;
       margin: 0 auto 60px;
@@ -99,47 +107,38 @@
   <h1>🌌 GN-MATH 🎮</h1>
 
   <div class="games">
-    <!-- Granny 2 -->
     <a href="https://elithebest222-gg.github.io/granny2" target="_blank" rel="noopener" class="game">
       <img src="https://igrozoom.ru/Minigames/Horror_4/granny_chapter_two.jpg" alt="Granny 2">
       <h3>Granny 2</h3>
     </a>
-    <!-- ULTRAKILL -->
     <a href="https://elithebest222-gg.github.io/uk" target="_blank" rel="noopener" class="game">
       <img src="https://shapes.inc/api/public/avatar/ultrakillrp" alt="ULTRAKILL">
       <h3>ULTRAKILL</h3>
     </a>
-    <!-- Gmod -->
     <a href="https://elithebest222-gg.github.io/Gmod" target="_blank" rel="noopener" class="game">
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Garry%27s_Mod_logo.svg/1200px-Garry%27s_Mod_logo.svg.png" alt="Gmod">
       <h3>Gmod</h3>
     </a>
-    <!-- Not My Neighbor -->
     <a href="https://elithebest222-gg.github.io/notmyn/" target="_blank" rel="noopener" class="game">
       <img src="https://howlongtobeat.com/games/147995_Thats_Not_My_Neighbor.jpg" alt="Not My Neighbor">
       <h3>Not My Neighbor</h3>
     </a>
-    <!-- Bow Masters -->
     <a href="https://elithebest222-gg.github.io/bm/" target="_blank" rel="noopener" class="game">
       <img src="https://play-lh.googleusercontent.com/rsQyCuie6S8Munc2Hv6IMpePP1g3c0okLkyKRXd1IimOryIBMZqymGKaOg7bZ6NMkhj3" alt="Bow Masters">
       <h3>Bow Masters</h3>
     </a>
-    <!-- Karl -->
     <a href="https://elithebest222-gg.github.io/Karl/" target="_blank" rel="noopener" class="game">
       <img src="https://www.gamenora.com/upload/games/thumbnails/Karlson.webp" alt="Karl">
       <h3>Karl</h3>
     </a>
-    <!-- Football Bros -->
     <a href="https://elithebest222-gg.github.io/footb/" target="_blank" rel="noopener" class="game">
       <img src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co951q.jpg" alt="Football Bros">
       <h3>Football Bros</h3>
     </a>
-    <!-- COD Zombies -->
     <a href="https://elithebest222-gg.github.io/codz" target="_blank" rel="noopener" class="game">
       <img src="https://static.wikia.nocookie.net/callofduty/images/4/40/BlackOps_Zombies_BoxArt.jpg/revision/latest/scale-to-width/360?cb=20120311054428" alt="COD Zombies">
       <h3>COD Zombies</h3>
     </a>
-    <!-- Pizza Tower -->
     <a href="https://elithebest222-gg.github.io/pt/" target="_blank" rel="noopener" class="game">
       <img src="https://assets-prd.ignimgs.com/2022/12/02/pizza-tower-button-02-1670021139476.jpg" alt="Pizza Tower">
       <h3>Pizza Tower</h3>
@@ -155,27 +154,6 @@
   </section>
 
   <script>
-    // Ad
-    try {
-      const adFrame = document.createElement('iframe');
-      adFrame.style.position = 'fixed';
-      adFrame.style.bottom = '10px';
-      adFrame.style.right = '10px';
-      adFrame.style.width = '300px';
-      adFrame.style.height = '250px';
-      adFrame.style.border = 'none';
-      adFrame.style.zIndex = 9999;
-      document.body.appendChild(adFrame);
-
-      const adDoc = adFrame.contentWindow.document;
-      adDoc.open();
-      adDoc.write(`<script src="https://fpyf8.com/88/tag.min.js" data-zone="175842" async data-cfasync="false"><\/script>`);
-      adDoc.close();
-    } catch (e) {
-      console.warn("Ad iframe failed to load.", e);
-    }
-
-    // GitHub repo list
     (function fetchAndRenderRepos() {
       const username = 'elithebest222-gg';
       const apiUrl = `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`;
