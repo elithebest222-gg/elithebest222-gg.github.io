@@ -3,25 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WWF SmackDown! (USA) – PS1 Emulator</title>
+  <title>WWF SmackDown (USA) – PS1 Emulator</title>
   <style>
     html, body {
       margin: 0;
-      padding: 0;
       background: #000;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      color: white;
-      font-family: sans-serif;
     }
     #game {
       width: 100vw;
       height: 100vh;
-      max-width: 100%;
-      max-height: 100%;
     }
   </style>
 </head>
@@ -29,25 +23,12 @@
   <div id="game"></div>
 
   <script type="text/javascript">
-    // Where to display the emulator
     EJS_player = '#game';
-
-    // BIOS (US)
     EJS_biosUrl = 'https://cdn.jsdelivr.net/gh/ethanaobrien/emulatorjs@main/bios/scph5501.bin';
-
-    // === ⚠️ IMPORTANT ===
-    // Replace this link with the exact Internet Archive URL for your .cue file.
-    // Example: https://archive.org/download/wwf-smackdown-usa/WWF-SmackDown-USA.cue
     EJS_gameUrl = 'https://archive.org/download/wwf-smack-down-usa/WWF-SmackDown-USA.cue';
-
-    // PS1 core
     EJS_core = 'psx';
-
-    // Path to EmulatorJS data
     EJS_pathtodata = 'https://cdn.jsdelivr.net/gh/ethanaobrien/emulatorjs@main/data/';
   </script>
-
-  <!-- EmulatorJS Loader -->
   <script src="https://www.emulatorjs.com/loader.js"></script>
 </body>
 </html>
