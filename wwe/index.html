@@ -1,39 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WWF SmackDown (USA) – PS1 Emulator</title>
-  <style>
-    html, body {
-      margin: 0;
-      background: #000;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    /* This is where the emulator draws the game */
-    #game {
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WWF SMACKDOWN by GN-MATH</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+        #game {
+            width: 100%;
+            max-width: 640px;
+            height: 480px;
+        }
+    </style>
 </head>
 <body>
+    <div id="game"></div>
 
-  <!-- ✅ THIS IS THE DIV -->
-  <div id="game"></div>
+    <script>
+        // EmulatorJS settings for PS1
+         EJS_player = "#game";
+         EJS_core = "psx"; // Core for PlayStation
+            EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+         EJS_gameUrl = "https://rawcdn.githack.com/Coding4Hours/Coding4Hours/b35dd7f9e0358667758a62e48e45399c6f56eafa/wwf-smackdown.7z?min=1"; // ZIP containing .bin + .cue or .iso
+    </script>
 
-  <script type="text/javascript">
-    // EmulatorJS configuration
-    EJS_player = '#game'; // ← this tells the emulator to draw inside that div
-    EJS_biosUrl = 'https://rawcdn.githack.com/EmulatorJS/EmulatorJS/main/bios/scph5501.bin';
-    EJS_gameUrl = 'https://archive.org/download/wwf-smack-down-usa/WWF-SmackDown-USA.cue';
-    EJS_core = 'psx';
-    EJS_pathtodata = 'https://rawcdn.githack.com/EmulatorJS/EmulatorJS/main/data/';
-  </script>
-  <script src="https://www.emulatorjs.com/loader.js"></script>
-
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>
 </html>
+
