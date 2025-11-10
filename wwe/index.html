@@ -13,6 +13,7 @@
       justify-content: center;
       align-items: center;
     }
+    /* This is where the emulator draws the game */
     #game {
       width: 100vw;
       height: 100vh;
@@ -20,15 +21,19 @@
   </style>
 </head>
 <body>
+
+  <!-- ✅ THIS IS THE DIV -->
   <div id="game"></div>
 
   <script type="text/javascript">
-    EJS_player = '#game';
-    EJS_biosUrl = 'https://cdn.jsdelivr.net/gh/ethanaobrien/emulatorjs@main/bios/scph5501.bin';
+    // EmulatorJS configuration
+    EJS_player = '#game'; // ← this tells the emulator to draw inside that div
+    EJS_biosUrl = 'https://rawcdn.githack.com/EmulatorJS/EmulatorJS/main/bios/scph5501.bin';
     EJS_gameUrl = 'https://archive.org/download/wwf-smack-down-usa/WWF-SmackDown-USA.cue';
     EJS_core = 'psx';
-    EJS_pathtodata = 'https://cdn.jsdelivr.net/gh/ethanaobrien/emulatorjs@main/data/';
+    EJS_pathtodata = 'https://rawcdn.githack.com/EmulatorJS/EmulatorJS/main/data/';
   </script>
   <script src="https://www.emulatorjs.com/loader.js"></script>
+
 </body>
 </html>
